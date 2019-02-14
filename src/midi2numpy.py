@@ -335,6 +335,9 @@ if __name__ == "__main__":
     # to a numpy-readable format:
     #
     # python midi2numpy convert_lib <directory>
+    #
+    # this will write out images of the MIDI files, and one large
+    # numpy file with numerical data.
     cmd = sys.argv[1]
     file = sys.argv[2]
 
