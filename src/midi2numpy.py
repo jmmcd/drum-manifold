@@ -160,6 +160,11 @@ def numpy2midi(n):
 
     return p
 
+def save_numpy_as_midi(ofname, X):
+    X *= 127.0 # scale back to midi range
+    X[X < 5] = 0.0 # filter ghost notes
+    midi.write_midifile(ofname, numpy2midi(X))
+
 def read_midi(ifname):
     if not ifname.endswith(".mid"):
         raise ValueError
@@ -325,6 +330,11 @@ def run_pca(file):
         write_image(x, "tmp%d" % i)
 
 if __name__ == "__main__":
+
+    # to use this library, we start by converting our midi library
+    # to a numpy-readable format:
+    #
+    # python midi2numpy convert_lib <directory>
     cmd = sys.argv[1]
     file = sys.argv[2]
 
