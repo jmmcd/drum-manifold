@@ -16,5 +16,5 @@ Then you can run the neural network:
 
 Some examples of the trained NN being used in a GUI: 
 
-<object width="425" height="344"><param name="movie" value="https://www.youtube.com/v/3kzbQI2LiOk&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><embed src="https://www.youtube.com/v/3kzbQI2LiOk&hl=en&fs=1" type="application/x-shockwave-flash" allowfullscreen="true" width="425" height="344"></embed></object>
+[![Video showing the trained NN being used in a GUI](https://img.youtube.com/vi/3kzbQI2LiOk/0.jpg)](https://youtu.be/3kzbQI2LiOk)
 
