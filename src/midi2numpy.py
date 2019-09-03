@@ -9,8 +9,6 @@
 # representation for machine learning purposes, also for printing
 # simple descriptors etc.
 
-# Uses python-midi available from
-# https://github.com/jmmcd/python-midi/ (my fork for py3k)
 
 import sys
 import os
@@ -21,8 +19,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from sklearn.decomposition import PCA
+from collections import Counter
 
+# Uses python-midi available from
+# https://github.com/jmmcd/python-midi/ (my fork for py3k)
+# pip install git+https://github.com/jmmcd/python-midi/
 import midi
+
+OH = 0
+pitches_present = Counter()
 
 # drum names
 names = ["BD", "SD", "CH", "OH", "RD", "CR", "LT", "MT", "HT"]
@@ -40,15 +45,23 @@ dm2 = {
     8: 48  # HT
     }
 
+
+# missing: 65, 71, 77, 79
+# 65: High Timbale
+# 71: Short Whistle
+# 77: Low Wood Block
+# 79: Open Cuica
+
+
 # map from drum pitches to indices in our array of drum names. can add
 # more elements to this, but map to an existing drum name index
 dm = {
     35: 0, 36: 0,                             # BD
     38: 1, 40: 1,                             # SD
     37: 1,                                    # SD (side-stick)
-    39: 1,                                    # SD (roll/flam)
+    39: 1,                                    # SD (roll/flam/clap)
     42: 2, 44: 2,                             # CH
-    69: 2, 70: 2,                             # CH (shaker)
+    54: 2, 69: 2, 70: 2,                      # CH (tambourine, shaker)
     46: 3,                                    # OH
 
     49: 5, 52: 5, 57: 5,                      # CR
@@ -83,7 +96,7 @@ def convert_time(ticks, maxticks, nsteps_this_loop):
 
 def write_image(a, filename):
     """Save an image of the pattern."""
-    print(a.shape)
+    #print(a.shape)
     fig = plt.figure(figsize=(10, 4))
     ax = fig.add_subplot(1, 1, 1)
     im = ax.matshow(a, cmap=cm.gray_r, interpolation="nearest")
@@ -224,6 +237,7 @@ def midi2numpy(md):
     for track in md:
         for event in track:
             if event.name == "Note On" and event.get_velocity() > 0:
+                pitches_present[event.get_pitch()] += 1
                 try:
                     idx = dm[event.get_pitch()]
                 except:
@@ -274,9 +288,12 @@ def convert_all_midi_to_numpy(dirname):
     Xs = []
     for root, dirs, files in os.walk(dirname, followlinks=False):
 
-        # if len(Xs) > 50: break # for testing purposes
+        #if len(Xs) > 50: break # for testing purposes
 
         for file in files:
+
+            #if len(Xs) > 50: break # for testing purposes
+            
             # find midi
             if file.endswith(".mid"):
                 filepath = join(root, file)
@@ -297,13 +314,13 @@ def convert_all_midi_to_numpy(dirname):
                 # print("Will convert", filepath)
                 accepted += 1
                 X = midi2numpy(read_midi(filepath))
-                write_image(X, filepath.replace(".mid", ".png"))
+                # write_image(X, filepath.replace(".mid", ".png"))
                 Xs.append(X)
-            print("rejected", rejected, "accepted", accepted)
+            print("rejected", rejected, "accepted", accepted, "Xs", len(Xs))
     Xs = np.array(Xs)
     print(Xs.shape)
-    np.save(dirname.rstrip("/") + ".npy", Xs)
-
+    # np.save(dirname.rstrip("/") + ".npy", Xs)
+    print(pitches_present)
 
 
 def run_pca(file):
@@ -325,7 +342,7 @@ def run_pca(file):
     # make 10 arbitrary points in the transformed space and see where
     # they go in the X space
     for i in range(10):
-        y = np.random.randn(n_components) * 100.0
+        y = np.random.randn(n_components) * 127 # PCA axes will be in approx this range since input was
         x = pca.inverse_transform(y).reshape((len(names), nsteps))
         write_image(x, "tmp%d" % i)
 

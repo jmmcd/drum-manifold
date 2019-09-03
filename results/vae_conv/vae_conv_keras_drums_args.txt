@@ -1,0 +1,1 @@
+Namespace(Lambda=0.01, batch_size=128, conv_layers=2, dense_layer_size=16, dropout_rate=0.2, epochs=100, filter_expansion=2, filters=16, kernel_size0=9, kernel_size1=4, latent_dim=10, loss='BCE', stride0=1, stride1=1, weights=None)
