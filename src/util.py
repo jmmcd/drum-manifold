@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.special import erfinv
 import time
+from argparse import Namespace
 
 # https://stackoverflow.com/questions/45296586/how-to-convert-uniform-normality-variables-in-python
 Gauss = lambda x, mu, sigma: mu + np.sqrt(2)*sigma*erfinv(2*x-1) 
@@ -73,25 +74,47 @@ def load_model(model_filename, s0, s1):
 
     elif model_filename.endswith(".h5"):
         import vae_conv_keras_drums
-
-        config = model_filename.split("/")[-2]
-        latent_dim, loss, Lambda, dropout_rate, conv_layers, filter_expansion, kernel_size0, kernel_size1 = config.split("_")
-        class Args: pass
-        args = Args()
-        args.latent_dim = int(latent_dim)
-        args.loss = loss
-        args.Lambda = float(Lambda)
-        args.dropout_rate = float(dropout_rate)
-        args.conv_layers = int(conv_layers)
-        args.filter_expansion = int(filter_expansion)
-        args.kernel_size0 = int(kernel_size0)
-        args.kernel_size1 = int(kernel_size1)
-        args.stride0 = 1
-        args.stride1 = 1
-        args.filters = 16
-        args.dense_layer_size = 16
-        args.epochs = 100
-        args.batch_size = 128
+        config_filename = model_filename.replace(".h5", "_args.txt")
+        s = open(config_filename).read()
+        args = eval(s)
+        
+        # latent_dim, loss, Lambda, dropout_rate, conv_layers, filter_expansion, kernel_size0, kernel_size1 = config.split("_")
+        
+        # config = model_filename.split("/")[-2]
+        
+        # @dataclass
+        # class Namespace:
+        #     Lambda: float=0.01
+        #     batch_size: int=128
+        #     conv_layers: int=2
+        #     dense_layer_size: int=16
+        #     dropout_rate: float=0.2
+        #     epochs: int=100
+        #     filter_expansion: int=2
+        #     filters: int=16
+        #     kernel_size0: int=9
+        #     kernel_size1: int=4
+        #     latent_dim: int=10
+        #     loss: str='BCE'
+        #     stride0: int=1
+        #     stride1: int=1
+        #     weights: np.array=np.array([[]])
+        
+        # args = Args()
+        # args.latent_dim = int(latent_dim)
+        # args.loss = loss
+        # args.Lambda = float(Lambda)
+        # args.dropout_rate = float(dropout_rate)
+        # args.conv_layers = int(conv_layers)
+        # args.filter_expansion = int(filter_expansion)
+        # args.kernel_size0 = int(kernel_size0)
+        # args.kernel_size1 = int(kernel_size1)
+        # args.stride0 = 1
+        # args.stride1 = 1
+        # args.filters = 16
+        # args.dense_layer_size = 16
+        # args.epochs = 100
+        # args.batch_size = 128
 
         input_shape = (9, 64, 1) # FIXME
         inputs, outputs, z_mean, z_log_var, encoder, decoder, vae = vae_conv_keras_drums.make_model(input_shape, args)
@@ -104,4 +127,4 @@ def load_model(model_filename, s0, s1):
     else:
         raise
 
-    return encode, decode, recon, int(latent_dim)
+    return encode, decode, recon, int(args.latent_dim)

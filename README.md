@@ -5,6 +5,13 @@ Support for a paper submitted to the Springer book Artificial Intelligence in Ar
 
 To use this, you need to install a Python MIDI library as follows: `pip install git+https://github.com/jmmcd/python-midi/`.
 
+Also Keras/Tensorflow, Kivy, PyGame:
+
+pip install kivy
+pip install pygame
+pip install --upgrade pip
+pip install tensorflow
+
 Then you need a MIDI drum-loop library for training data. I used a library from Groove Monkee. They have a cut-down version available for free which works. Start by pre-processing it (where `<directory>` contains the library, and this will write out images of the MIDI files plus one large numpy file):
 
 `python midi2numpy.py convert_lib <directory>`

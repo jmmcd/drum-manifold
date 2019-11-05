@@ -128,7 +128,7 @@ verbose         - print a report useful for tuning appLatency
                         if self.opts==1:
                                 print("Automatically choosing the single output device found")
                         else:
-                                self.device = int(raw_input("Type output number: "))
+                                self.device = int(input("Type output number: "))
                         print("")
 
                 self.MidiOut=pm.Output(self.device,self.driverLatency)

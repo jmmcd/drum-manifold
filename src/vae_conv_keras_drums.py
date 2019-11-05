@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 '''Example of VAE on MNIST dataset using CNN
 
 The VAE has a modular design. The encoder, decoder and VAE
@@ -46,9 +50,6 @@ source activate tf
 
 
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import numpy as np
 np.random.seed(0) # for reproducibility
@@ -56,14 +57,15 @@ import matplotlib.pyplot as plt
 import argparse
 import os
 
-from keras.layers import Dense, Input, Dropout
-from keras.layers import Conv2D, Flatten, Lambda
-from keras.layers import Reshape, Conv2DTranspose
-from keras.models import Model
-from keras.losses import mse, binary_crossentropy
-from keras.utils import plot_model
-from keras.callbacks import CSVLogger
-from keras import backend as K
+import tensorflow as tf
+from tensorflow.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.layers import Conv2D, Flatten, Lambda
+from tensorflow.keras.layers import Reshape, Conv2DTranspose
+from tensorflow.keras.models import Model
+from tensorflow.keras.losses import mse, binary_crossentropy
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.callbacks import CSVLogger
+from tensorflow.keras import backend as K
 
 from util import print_drums, Gauss, Clip, load_GM_data, load_model
 
