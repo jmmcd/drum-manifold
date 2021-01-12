@@ -335,35 +335,12 @@ def test_multichannel():
     b.close()
     
 if __name__ == "__main__":
-
-        #test()
-        test_multichannel()
-        quit()
-        
         b=midiBuffer(device=[],verbose=True)
         tempo=160
         dur=int(60.0/tempo/2 * 1000) #(eigth note duration in ms)
         notes=[60, 63, 66, 70]
-        pitches=[]
-        maxPitch=MIDI_MAX**2
-        for i in range(dur):
-                pitches.append(int((i*(maxPitch-1.0)/(dur-1)) - maxPitch/2))
-
-        n=0
         t=b.getTime()
 
-        for n in range(10):
-                #b.programChange(n,1,t)
-                #b.playChord(notes,dur,127,1,t) #without midiBuffer, the NOTE-OFF's from this chord would blcok the following events
-                #b.playChord(notes,dur,127,onset=t)
-
-                for i in range(dur):
-                        b.playChord(notes, dur, 127, onset=t+i)
-                        b.controlChange(1,int(i*127.0/(dur-1)),1,t+i) #controller 1 is the mod wheel
-                        b.pitchBend(pitches[i],1,t+i)
-                        b.keyPressure(notes[0]-12,int(i*127.0/(dur-1)),1,t+i)
-                        b.channelPressure(int(i*127.0/(dur-1)),1,t+i)
-
-                t+=2*dur
-
+        for i in range(10):
+                b.playChord(notes, dur, 48, onset=t+i*500)
         b.close()
